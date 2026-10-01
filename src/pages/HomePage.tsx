@@ -1,17 +1,26 @@
 import { ArrowRight, ClipboardCheck, Filter, ListChecks } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { CategoryFilter } from '../components/CategoryFilter'
 import { Hero } from '../components/Hero'
 import { ServiceCard } from '../components/ServiceCard'
 import { services } from '../data/services'
 import serviceToolsImage from '../assets/service-tools.webp'
+import type { ServiceCategory } from '../types'
 
 interface HomePageProps {
   readonly onBookingClick: (serviceId?: string) => void
 }
 
 export function HomePage({ onBookingClick }: HomePageProps) {
+  const navigate = useNavigate()
   const popularServices = services.filter((service) => service.popular).slice(0, 4)
+
+  const openCategory = (category: ServiceCategory | 'all') => {
+    navigate({
+      pathname: '/services',
+      search: category === 'all' ? '' : `?category=${category}`,
+    })
+  }
 
   return (
     <>
@@ -29,7 +38,7 @@ export function HomePage({ onBookingClick }: HomePageProps) {
           </Link>
         </div>
         <div className="container">
-          <CategoryFilter activeCategory="all" onChange={() => undefined} />
+          <CategoryFilter activeCategory="all" onChange={openCategory} />
         </div>
       </section>
 

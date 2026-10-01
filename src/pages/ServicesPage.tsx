@@ -1,15 +1,25 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { CategoryFilter } from '../components/CategoryFilter'
 import { ServiceCard } from '../components/ServiceCard'
-import { services } from '../data/services'
+import { serviceCategories, services } from '../data/services'
 import type { ServiceCategory } from '../types'
 
 interface ServicesPageProps {
   readonly onBookingClick: (serviceId?: string) => void
 }
 
+const getCategoryFromSearch = (category: string | null): ServiceCategory | 'all' => {
+  if (serviceCategories.some((item) => item.id === category)) {
+    return category as ServiceCategory
+  }
+
+  return 'all'
+}
+
 export function ServicesPage({ onBookingClick }: ServicesPageProps) {
-  const [activeCategory, setActiveCategory] = useState<ServiceCategory | 'all'>('all')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const activeCategory = getCategoryFromSearch(searchParams.get('category'))
 
   const filteredServices = useMemo(() => {
     if (activeCategory === 'all') {
@@ -18,6 +28,10 @@ export function ServicesPage({ onBookingClick }: ServicesPageProps) {
 
     return services.filter((service) => service.category === activeCategory)
   }, [activeCategory])
+
+  const changeCategory = (category: ServiceCategory | 'all') => {
+    setSearchParams(category === 'all' ? {} : { category })
+  }
 
   return (
     <section className="section page-section">
@@ -29,7 +43,7 @@ export function ServicesPage({ onBookingClick }: ServicesPageProps) {
         </p>
       </div>
       <div className="container">
-        <CategoryFilter activeCategory={activeCategory} onChange={setActiveCategory} />
+        <CategoryFilter activeCategory={activeCategory} onChange={changeCategory} />
       </div>
       <div className="container catalog-summary">
         Найдено услуг: <strong>{filteredServices.length}</strong>
