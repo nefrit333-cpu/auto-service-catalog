@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { BookingModal } from './components/BookingModal'
 import { Footer } from './components/Footer'
@@ -12,14 +12,22 @@ import { ServicesPage } from './pages/ServicesPage'
 function App() {
   const [bookingServiceId, setBookingServiceId] = useState<string | null>(null)
   const [isBookingOpen, setIsBookingOpen] = useState(false)
+  const bookingTriggerRef = useRef<HTMLElement | null>(null)
 
   const openBooking = (serviceId?: string) => {
+    bookingTriggerRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
     setBookingServiceId(serviceId ?? null)
     setIsBookingOpen(true)
   }
 
   const closeBooking = () => {
     setIsBookingOpen(false)
+    window.requestAnimationFrame(() => {
+      if (bookingTriggerRef.current?.isConnected) {
+        bookingTriggerRef.current.focus()
+      }
+    })
   }
 
   return (

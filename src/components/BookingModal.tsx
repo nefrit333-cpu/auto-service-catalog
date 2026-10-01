@@ -1,5 +1,5 @@
 import { CheckCircle2, ChevronLeft, ChevronRight, X } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import type { ContactFormData, Service, VehicleFormData } from '../types'
 
@@ -26,7 +26,23 @@ const emptyContact: ContactFormData = {
   preferredTime: '',
 }
 
+const focusableSelector = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',')
+
+const getFocusableElements = (container: HTMLElement): HTMLElement[] =>
+  Array.from(container.querySelectorAll<HTMLElement>(focusableSelector)).filter(
+    (element) => !element.hasAttribute('hidden') && element.offsetParent !== null,
+  )
+
 export function BookingModal({ initialServiceId, services, onClose }: BookingModalProps) {
+  const dialogRef = useRef<HTMLElement | null>(null)
+  const titleRef = useRef<HTMLHeadingElement | null>(null)
   const [step, setStep] = useState<Step>(1)
   const [selectedServiceId, setSelectedServiceId] = useState(initialServiceId ?? '')
   const [vehicle, setVehicle] = useState<VehicleFormData>(emptyVehicle)
@@ -40,10 +56,50 @@ export function BookingModal({ initialServiceId, services, onClose }: BookingMod
   )
 
   useEffect(() => {
+    titleRef.current?.focus({ preventScroll: true })
+  }, [])
+
+  useEffect(() => {
+    const trapFocus = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') {
+        return
+      }
+
+      const dialog = dialogRef.current
+      if (!dialog) {
+        return
+      }
+
+      const focusableElements = getFocusableElements(dialog)
+      if (focusableElements.length === 0) {
+        event.preventDefault()
+        dialog.focus({ preventScroll: true })
+        return
+      }
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+      const activeElement = document.activeElement
+
+      if (event.shiftKey && (activeElement === firstElement || !dialog.contains(activeElement))) {
+        event.preventDefault()
+        lastElement.focus()
+        return
+      }
+
+      if (!event.shiftKey && activeElement === lastElement) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose()
+        return
       }
+
+      trapFocus(event)
     }
 
     window.addEventListener('keydown', onKeyDown)
@@ -125,11 +181,15 @@ export function BookingModal({ initialServiceId, services, onClose }: BookingMod
         role="dialog"
         aria-modal="true"
         aria-labelledby="booking-title"
+        ref={dialogRef}
+        tabIndex={-1}
       >
         <div className="modal-header">
           <div>
             <p className="modal-kicker">Demo-запись</p>
-            <h2 id="booking-title">Запись на обслуживание</h2>
+            <h2 id="booking-title" ref={titleRef} tabIndex={-1}>
+              Запись на обслуживание
+            </h2>
           </div>
           <button className="icon-button" type="button" aria-label="Закрыть форму" onClick={onClose}>
             <X size={22} />
@@ -166,6 +226,8 @@ export function BookingModal({ initialServiceId, services, onClose }: BookingMod
                 </label>
                 <select
                   id="service"
+                  aria-describedby={errors.service ? 'service-error' : undefined}
+                  aria-invalid={errors.service ? 'true' : undefined}
                   value={selectedServiceId}
                   onChange={(event) => {
                     setSelectedServiceId(event.target.value)
@@ -179,7 +241,11 @@ export function BookingModal({ initialServiceId, services, onClose }: BookingMod
                     </option>
                   ))}
                 </select>
-                {errors.service ? <p className="field-error">{errors.service}</p> : null}
+                {errors.service ? (
+                  <p className="field-error" id="service-error" role="alert">
+                    {errors.service}
+                  </p>
+                ) : null}
                 {selectedService ? (
                   <p className="helper-text">
                     Выбрано: {selectedService.title}, {selectedService.duration}, цена от{' '}
@@ -199,35 +265,53 @@ export function BookingModal({ initialServiceId, services, onClose }: BookingMod
                 </label>
                 <input
                   id="car"
+                  aria-describedby={errors.car ? 'car-error' : undefined}
+                  aria-invalid={errors.car ? 'true' : undefined}
                   value={vehicle.car}
                   onChange={(event) => updateVehicle('car', event.target.value)}
                   placeholder="Например: Kia Rio"
                 />
-                {errors.car ? <p className="field-error">{errors.car}</p> : null}
+                {errors.car ? (
+                  <p className="field-error" id="car-error" role="alert">
+                    {errors.car}
+                  </p>
+                ) : null}
 
                 <label className="field-label" htmlFor="year">
                   Год выпуска
                 </label>
                 <input
                   id="year"
+                  aria-describedby={errors.year ? 'year-error' : undefined}
+                  aria-invalid={errors.year ? 'true' : undefined}
                   inputMode="numeric"
                   value={vehicle.year}
                   onChange={(event) => updateVehicle('year', event.target.value)}
                   placeholder="2018"
                 />
-                {errors.year ? <p className="field-error">{errors.year}</p> : null}
+                {errors.year ? (
+                  <p className="field-error" id="year-error" role="alert">
+                    {errors.year}
+                  </p>
+                ) : null}
 
                 <label className="field-label" htmlFor="task">
                   Комментарий
                 </label>
                 <textarea
                   id="task"
+                  aria-describedby={errors.task ? 'task-error' : undefined}
+                  aria-invalid={errors.task ? 'true' : undefined}
                   value={vehicle.task}
                   onChange={(event) => updateVehicle('task', event.target.value)}
                   placeholder="Опишите симптом или задачу"
                   rows={4}
                 />
-                {errors.task ? <p className="field-error">{errors.task}</p> : null}
+                {errors.task ? (
+                  <p className="field-error" id="task-error" role="alert">
+                    {errors.task}
+                  </p>
+                ) : null}
               </fieldset>
             ) : null}
 
@@ -239,22 +323,34 @@ export function BookingModal({ initialServiceId, services, onClose }: BookingMod
                 </label>
                 <input
                   id="name"
+                  aria-describedby={errors.name ? 'name-error' : undefined}
+                  aria-invalid={errors.name ? 'true' : undefined}
                   value={contact.name}
                   onChange={(event) => updateContact('name', event.target.value)}
                   placeholder="Как к вам обращаться"
                 />
-                {errors.name ? <p className="field-error">{errors.name}</p> : null}
+                {errors.name ? (
+                  <p className="field-error" id="name-error" role="alert">
+                    {errors.name}
+                  </p>
+                ) : null}
 
                 <label className="field-label" htmlFor="phone">
                   Телефон
                 </label>
                 <input
                   id="phone"
+                  aria-describedby={errors.phone ? 'phone-error' : undefined}
+                  aria-invalid={errors.phone ? 'true' : undefined}
                   value={contact.phone}
                   onChange={(event) => updateContact('phone', event.target.value)}
                   placeholder="Введите телефон для связи"
                 />
-                {errors.phone ? <p className="field-error">{errors.phone}</p> : null}
+                {errors.phone ? (
+                  <p className="field-error" id="phone-error" role="alert">
+                    {errors.phone}
+                  </p>
+                ) : null}
 
                 <label className="field-label" htmlFor="preferredTime">
                   Удобное время или комментарий
