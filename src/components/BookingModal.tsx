@@ -80,8 +80,17 @@ export function BookingModal({ initialServiceId, services, onClose }: BookingMod
       const firstElement = focusableElements[0]
       const lastElement = focusableElements[focusableElements.length - 1]
       const activeElement = document.activeElement
+      const isFocusInsideDialog = activeElement ? dialog.contains(activeElement) : false
+      const isActiveFocusable =
+        activeElement instanceof HTMLElement && focusableElements.includes(activeElement)
 
-      if (event.shiftKey && (activeElement === firstElement || !dialog.contains(activeElement))) {
+      if (!isFocusInsideDialog || !isActiveFocusable) {
+        event.preventDefault()
+        ;(event.shiftKey ? lastElement : firstElement).focus()
+        return
+      }
+
+      if (event.shiftKey && activeElement === firstElement) {
         event.preventDefault()
         lastElement.focus()
         return
