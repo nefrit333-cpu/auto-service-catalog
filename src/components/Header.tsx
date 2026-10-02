@@ -1,4 +1,4 @@
-import { Menu, Wrench, X } from 'lucide-react'
+import { ChevronRight, Menu, Wrench, X } from 'lucide-react'
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
@@ -32,7 +32,12 @@ export function Header({ onBookingClick }: HeaderProps) {
 
         <nav className="desktop-nav" aria-label="Основная навигация">
           {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to}>
+            <NavLink
+              className={({ isActive }) => (isActive ? 'active' : undefined)}
+              end={item.to === '/'}
+              key={item.to}
+              to={item.to}
+            >
               {item.label}
             </NavLink>
           ))}
@@ -46,6 +51,7 @@ export function Header({ onBookingClick }: HeaderProps) {
             className="icon-button mobile-menu-button"
             type="button"
             aria-label={isMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+            aria-controls="mobile-menu"
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((current) => !current)}
           >
@@ -55,23 +61,43 @@ export function Header({ onBookingClick }: HeaderProps) {
       </div>
 
       {isMenuOpen ? (
-        <nav className="mobile-nav" aria-label="Мобильная навигация">
-          {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} onClick={closeMenu}>
-              {item.label}
-            </NavLink>
-          ))}
-          <button
-            className="button button-primary"
-            type="button"
-            onClick={() => {
-              closeMenu()
-              onBookingClick()
-            }}
-          >
-            Записаться
-          </button>
-        </nav>
+        <div className="mobile-nav-wrap">
+          <nav className="mobile-nav" id="mobile-menu" aria-label="Мобильная навигация">
+            <div className="mobile-nav-note">
+              <strong>Быстрый доступ</strong>
+              <span>Каталог, контакты и demo-запись без лишних переходов.</span>
+            </div>
+            <div className="mobile-nav-links">
+              {navItems.map((item) => (
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? 'mobile-nav-link active' : 'mobile-nav-link'
+                  }
+                  end={item.to === '/'}
+                  key={item.to}
+                  to={item.to}
+                  onClick={closeMenu}
+                >
+                  <span>{item.label}</span>
+                  <ChevronRight className="mobile-nav-link-icon" size={18} aria-hidden="true" />
+                </NavLink>
+              ))}
+            </div>
+            <div className="mobile-nav-footer">
+              <span>Учебный demo-проект</span>
+              <button
+                className="button button-primary"
+                type="button"
+                onClick={() => {
+                  closeMenu()
+                  onBookingClick()
+                }}
+              >
+                Записаться
+              </button>
+            </div>
+          </nav>
+        </div>
       ) : null}
     </header>
   )
