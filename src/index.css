@@ -684,16 +684,6 @@ textarea:focus-visible {
     background 180ms ease;
 }
 
-.service-card::before {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), rgb(77 98 116 / 28%), transparent);
-  opacity: 0.42;
-  content: "";
-  pointer-events: none;
-}
-
 .service-card:hover {
   background:
     linear-gradient(180deg, #ffffff, rgb(255 248 239 / 64%)),
@@ -1276,6 +1266,10 @@ textarea {
   .service-actions .text-link {
     width: 100%;
     justify-content: center;
+  }
+
+  .service-actions .button {
+    min-height: 44px;
   }
 
   .booking-modal {
