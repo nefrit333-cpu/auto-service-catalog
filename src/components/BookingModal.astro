@@ -1,0 +1,137 @@
+---
+import { ChevronLeft, ChevronRight, CircleCheckBig, X } from '@lucide/astro'
+import { services } from '../data/services'
+---
+
+<div class="modal-backdrop" role="presentation" data-booking-backdrop hidden>
+  <section
+    class="booking-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="booking-title"
+    tabindex="-1"
+    data-booking-modal
+  >
+    <div class="modal-header">
+      <div>
+        <p class="modal-kicker">Demo-запись</p>
+        <h2 id="booking-title" tabindex="-1" data-booking-title>
+          Запись на обслуживание
+        </h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Закрыть форму" data-booking-close>
+        <X size={22} aria-hidden="true" />
+      </button>
+    </div>
+
+    <div class="success-state" data-booking-success hidden>
+      <CircleCheckBig size={44} aria-hidden="true" />
+      <h3>Заявка принята в demo-режиме</h3>
+      <p>
+        В реальном проекте здесь была бы отправка в CRM или менеджеру. В этом учебном
+        интерфейсе данные никуда не отправляются.
+      </p>
+      <button class="button button-primary" type="button" data-booking-close>
+        Закрыть
+      </button>
+    </div>
+
+    <form data-booking-form novalidate>
+      <div class="steps" aria-label="Шаги формы">
+        <span class="step active" data-booking-step-indicator="1">1</span>
+        <span class="step" data-booking-step-indicator="2">2</span>
+        <span class="step" data-booking-step-indicator="3">3</span>
+      </div>
+
+      <fieldset class="form-step" data-booking-step="1">
+        <legend>Выберите услугу</legend>
+        <label class="field-label" for="service">Услуга</label>
+        <select id="service" name="service" data-booking-service>
+          <option value="">Выберите из каталога</option>
+          {
+            services.map((service) => (
+              <option value={service.id} data-duration={service.duration} data-price={service.priceFrom}>
+                {service.title}
+              </option>
+            ))
+          }
+        </select>
+        <p class="field-error" id="service-error" role="alert" data-error-for="service" hidden></p>
+        <p class="helper-text" data-booking-selected-service>
+          Выбор можно изменить на следующем открытии формы.
+        </p>
+      </fieldset>
+
+      <fieldset class="form-step" data-booking-step="2" hidden>
+        <legend>Авто и задача</legend>
+        <label class="field-label" for="car">Марка и модель</label>
+        <input id="car" name="car" placeholder="Например: Kia Rio" data-booking-field="car" />
+        <p class="field-error" id="car-error" role="alert" data-error-for="car" hidden></p>
+
+        <label class="field-label" for="year">Год выпуска</label>
+        <input
+          id="year"
+          name="year"
+          inputmode="numeric"
+          placeholder="2018"
+          data-booking-field="year"
+        />
+        <p class="field-error" id="year-error" role="alert" data-error-for="year" hidden></p>
+
+        <label class="field-label" for="task">Комментарий</label>
+        <textarea
+          id="task"
+          name="task"
+          placeholder="Опишите симптом или задачу"
+          rows="4"
+          data-booking-field="task"
+        ></textarea>
+        <p class="field-error" id="task-error" role="alert" data-error-for="task" hidden></p>
+      </fieldset>
+
+      <fieldset class="form-step" data-booking-step="3" hidden>
+        <legend>Контакты</legend>
+        <label class="field-label" for="name">Имя</label>
+        <input
+          id="name"
+          name="name"
+          placeholder="Как к вам обращаться"
+          data-booking-field="name"
+        />
+        <p class="field-error" id="name-error" role="alert" data-error-for="name" hidden></p>
+
+        <label class="field-label" for="phone">Телефон</label>
+        <input
+          id="phone"
+          name="phone"
+          placeholder="Введите телефон для связи"
+          data-booking-field="phone"
+        />
+        <p class="field-error" id="phone-error" role="alert" data-error-for="phone" hidden></p>
+
+        <label class="field-label" for="preferredTime">Удобное время или комментарий</label>
+        <textarea
+          id="preferredTime"
+          name="preferredTime"
+          placeholder="Например: будний день после 18:00"
+          rows="3"
+          data-booking-field="preferredTime"
+        ></textarea>
+      </fieldset>
+
+      <div class="modal-actions">
+        <button class="button button-secondary" type="button" data-booking-back disabled>
+          <ChevronLeft size={18} aria-hidden="true" />
+          Назад
+        </button>
+        <button class="button button-primary" type="button" data-booking-next>
+          Далее
+          <ChevronRight size={18} aria-hidden="true" />
+        </button>
+        <button class="button button-primary" type="submit" data-booking-submit hidden>
+          Demo-отправка
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

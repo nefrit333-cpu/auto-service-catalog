@@ -1,0 +1,40 @@
+---
+import { serviceCategories } from '../data/services'
+import { withBase } from '../utils/paths'
+
+interface Props {
+  readonly activeCategory?: string
+  readonly catalogMode?: boolean
+}
+
+const { activeCategory = 'all', catalogMode = false } = Astro.props
+
+const categoryHref = (category: string) => {
+  if (category === 'all') {
+    return withBase('services/')
+  }
+
+  return withBase(`services/?category=${category}`)
+}
+---
+
+<div class="filter-row" aria-label="Фильтр категорий услуг" data-category-filter={catalogMode ? 'catalog' : 'home'}>
+  <a
+    class:list={['filter-chip', activeCategory === 'all' && 'active']}
+    href={categoryHref('all')}
+    data-filter-category="all"
+  >
+    Все
+  </a>
+  {
+    serviceCategories.map((category) => (
+      <a
+        class:list={['filter-chip', activeCategory === category.id && 'active']}
+        href={categoryHref(category.id)}
+        data-filter-category={category.id}
+      >
+        {category.label}
+      </a>
+    ))
+  }
+</div>

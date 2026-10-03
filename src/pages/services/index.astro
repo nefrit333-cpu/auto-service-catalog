@@ -1,0 +1,25 @@
+---
+import CategoryFilter from '../../components/CategoryFilter.astro'
+import ServiceCard from '../../components/ServiceCard.astro'
+import { services } from '../../data/services'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+---
+
+<BaseLayout activePath="/services/" title="Каталог услуг | Автосервис portfolio demo">
+  <section class="section page-section">
+    <div class="container page-heading">
+      <p class="small-label">Каталог</p>
+      <h1>Услуги и цены “от”</h1>
+      <p>Фильтр работает на клиенте, без перезагрузки страницы и без обращения к серверу.</p>
+    </div>
+    <div class="container">
+      <CategoryFilter activeCategory="all" catalogMode />
+    </div>
+    <div class="container catalog-summary">
+      Найдено услуг: <strong data-catalog-count>{services.length}</strong>
+    </div>
+    <div class="container service-grid catalog-grid" data-catalog-grid>
+      {services.map((service) => <ServiceCard service={service} />)}
+    </div>
+  </section>
+</BaseLayout>

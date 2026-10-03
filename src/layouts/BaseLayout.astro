@@ -1,0 +1,48 @@
+---
+import BookingModal from '../components/BookingModal.astro'
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import '../styles/global.css'
+
+interface Props {
+  readonly title?: string
+  readonly description?: string
+  readonly activePath?: '/' | '/services/' | '/contacts/'
+}
+
+const {
+  title = 'Автосервис portfolio demo',
+  description = 'Учебный Astro-сайт автосервиса: каталог услуг, фильтры и demo-запись без отправки данных.',
+  activePath = '/',
+} = Astro.props
+---
+
+<!doctype html>
+<html lang="ru" data-base-url={import.meta.env.BASE_URL}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-shell">
+      <Header activePath={activePath} />
+      <main>
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <BookingModal />
+    <script>
+      import '../scripts/site.ts'
+    </script>
+  </body>
+</html>

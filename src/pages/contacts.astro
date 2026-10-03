@@ -1,0 +1,46 @@
+---
+import { CalendarPlus, MapPin, MessageSquareText } from '@lucide/astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout activePath="/contacts/" title="Контакты | Автосервис portfolio demo">
+  <section class="section page-section">
+    <div class="container contacts-layout">
+      <div class="page-heading">
+        <p class="small-label">Контакты</p>
+        <h1>Demo-контакты для портфолио</h1>
+        <p>
+          Здесь нет реальной компании и реального отдела записи. Контакты нужны, чтобы показать,
+          как выглядела бы страница автосервиса в учебном проекте.
+        </p>
+      </div>
+
+      <div class="contact-panel">
+        <div class="contact-row">
+          <MapPin size={22} aria-hidden="true" />
+          <div>
+            <strong>Адрес</strong>
+            <span>Москва, demo-адрес для портфолио</span>
+          </div>
+        </div>
+        <div class="contact-row">
+          <MessageSquareText size={22} aria-hidden="true" />
+          <div>
+            <strong>Связь</strong>
+            <span>Контактные данные не привязаны к реальному бизнесу.</span>
+          </div>
+        </div>
+        <div class="contact-row">
+          <CalendarPlus size={22} aria-hidden="true" />
+          <div>
+            <strong>Запись</strong>
+            <span>Форма работает только как frontend-demo и не отправляет заявку.</span>
+          </div>
+        </div>
+        <button class="button button-primary" type="button" data-booking-open>
+          Открыть форму записи
+        </button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

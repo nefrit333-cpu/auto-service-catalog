@@ -1,0 +1,96 @@
+---
+import { ArrowRight, ClipboardCheck, ListChecks, SlidersHorizontal } from '@lucide/astro'
+import CategoryFilter from '../components/CategoryFilter.astro'
+import Hero from '../components/Hero.astro'
+import ServiceCard from '../components/ServiceCard.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import serviceToolsImage from '../assets/service-tools.webp'
+import { services } from '../data/services'
+import { withBase } from '../utils/paths'
+
+const popularServices = services.filter((service) => service.popular).slice(0, 4)
+---
+
+<BaseLayout activePath="/">
+  <Hero />
+
+  <section class="section">
+    <div class="container section-header">
+      <div>
+        <h2>Быстрые категории</h2>
+        <p>Переходите в каталог и фильтруйте услуги без перезагрузки страницы.</p>
+      </div>
+      <a class="text-link" href={withBase('services/')}>
+        Весь каталог
+        <ArrowRight size={16} aria-hidden="true" />
+      </a>
+    </div>
+    <div class="container">
+      <CategoryFilter activeCategory="all" />
+    </div>
+  </section>
+
+  <section class="section section-muted">
+    <div class="container section-header">
+      <div>
+        <h2>Популярные услуги</h2>
+        <p>Карточки показывают категорию, цену “от”, длительность и быстрые действия.</p>
+      </div>
+    </div>
+    <div class="container service-grid">
+      {popularServices.map((service) => <ServiceCard service={service} />)}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container process-layout">
+      <div>
+        <h2>Как устроена запись</h2>
+        <p>
+          Сценарий сделан как frontend-demo: пользователь выбирает услугу, описывает авто и
+          оставляет контакты. После отправки появляется success-состояние без сетевого запроса.
+        </p>
+        <div class="process-list">
+          <div>
+            <ListChecks size={24} aria-hidden="true" />
+            <strong>1. Выберите услугу</strong>
+            <span>Из каталога или со страницы конкретной услуги.</span>
+          </div>
+          <div>
+            <SlidersHorizontal size={24} aria-hidden="true" />
+            <strong>2. Опишите автомобиль</strong>
+            <span>Марка, модель, год и короткий комментарий по задаче.</span>
+          </div>
+          <div>
+            <ClipboardCheck size={24} aria-hidden="true" />
+            <strong>3. Оставьте контакты</strong>
+            <span>Интерфейс покажет demo-статус без отправки на сервер.</span>
+          </div>
+        </div>
+      </div>
+      <div class="process-media">
+        <img
+          src={serviceToolsImage.src}
+          width={serviceToolsImage.width}
+          height={serviceToolsImage.height}
+          alt="Demo-кадр инструментов для обслуживания автомобиля"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section demo-band">
+    <div class="container demo-band-inner">
+      <div>
+        <h2>Это учебный portfolio demo</h2>
+        <p>
+          Сайт не представляет реальную компанию. Контакты условные, заявки никуда не уходят,
+          а данные нужны только для демонстрации интерфейса.
+        </p>
+      </div>
+      <button class="button button-primary" type="button" data-booking-open>
+        Открыть demo-запись
+      </button>
+    </div>
+  </section>
+</BaseLayout>

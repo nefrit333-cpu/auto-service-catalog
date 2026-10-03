@@ -1,0 +1,18 @@
+---
+import { ArrowLeft } from '@lucide/astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { withBase } from '../utils/paths'
+---
+
+<BaseLayout title="Страница не найдена | Автосервис portfolio demo">
+  <section class="section page-section">
+    <div class="container page-heading">
+      <h1>Услуга или страница не найдена</h1>
+      <p>Проверьте адрес или вернитесь в каталог.</p>
+      <a class="button button-secondary" href={withBase('services/')}>
+        <ArrowLeft size={18} aria-hidden="true" />
+        В каталог
+      </a>
+    </div>
+  </section>
+</BaseLayout>

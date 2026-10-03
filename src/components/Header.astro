@@ -1,0 +1,86 @@
+---
+import { ChevronRight, Menu, Wrench, X } from '@lucide/astro'
+import { withBase } from '../utils/paths'
+
+interface Props {
+  readonly activePath: '/' | '/services/' | '/contacts/'
+}
+
+const { activePath } = Astro.props
+
+const navItems = [
+  { href: withBase(''), path: '/', label: 'Главная' },
+  { href: withBase('services/'), path: '/services/', label: 'Услуги' },
+  { href: withBase('contacts/'), path: '/contacts/', label: 'Контакты' },
+] as const
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={withBase('')}>
+      <span class="brand-mark" aria-hidden="true">
+        <Wrench size={20} />
+      </span>
+      <span>
+        <strong>Автосервис</strong>
+        <small>portfolio demo</small>
+      </span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Основная навигация">
+      {
+        navItems.map((item) => (
+          <a class:list={[activePath === item.path && 'active']} href={item.href}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="header-actions">
+      <button class="button button-primary" type="button" data-booking-open>
+        Записаться
+      </button>
+      <button
+        class="icon-button mobile-menu-button"
+        type="button"
+        aria-label="Открыть меню"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        data-mobile-menu-button
+      >
+        <Menu class="menu-open-icon" size={22} aria-hidden="true" />
+        <X class="menu-close-icon" size={22} aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav-wrap" data-mobile-menu-wrap hidden>
+    <nav class="mobile-nav" id="mobile-menu" aria-label="Мобильная навигация">
+      <div class="mobile-nav-note">
+        <strong>Быстрый доступ</strong>
+        <span>Каталог, контакты и demo-запись без лишних переходов.</span>
+      </div>
+      <div class="mobile-nav-links">
+        {
+          navItems.map((item) => (
+            <a
+              class:list={['mobile-nav-link', activePath === item.path && 'active']}
+              href={item.href}
+              data-mobile-menu-link
+            >
+              <span>{item.label}</span>
+              <ChevronRight class="mobile-nav-link-icon" size={18} aria-hidden="true" />
+            </a>
+          ))
+        }
+      </div>
+      <div class="mobile-nav-footer">
+        <span>Учебный demo-проект</span>
+        <button class="button button-primary" type="button" data-booking-open data-mobile-menu-close>
+          Записаться
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>

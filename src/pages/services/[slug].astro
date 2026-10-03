@@ -1,0 +1,69 @@
+---
+import { ArrowLeft, CalendarPlus, Clock, WalletCards } from '@lucide/astro'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { formatPrice, serviceCategories, services } from '../../data/services'
+import { withBase } from '../../utils/paths'
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }))
+}
+
+const { service } = Astro.props
+const categoryLabel =
+  serviceCategories.find((category) => category.id === service.category)?.label ?? 'Услуга'
+---
+
+<BaseLayout activePath="/services/" title={`${service.title} | Автосервис portfolio demo`}>
+  <section class="section page-section">
+    <div class="container detail-layout">
+      <article class="detail-main">
+        <a class="text-link back-link" href={withBase('services/')}>
+          <ArrowLeft size={16} aria-hidden="true" />
+          Назад в каталог
+        </a>
+        <span class="category-badge">{categoryLabel}</span>
+        <h1>{service.title}</h1>
+        <p>{service.description}</p>
+
+        <div class="detail-facts">
+          <span>
+            <WalletCards size={18} aria-hidden="true" />
+            от {formatPrice(service.priceFrom)} ₽
+          </span>
+          <span>
+            <Clock size={18} aria-hidden="true" />
+            {service.duration}
+          </span>
+        </div>
+
+        <div class="detail-columns">
+          <div>
+            <h2>Что входит</h2>
+            <ul class="check-list">
+              {service.includes.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div>
+            <h2>Что важно уточнить</h2>
+            <ul class="check-list">
+              {service.clarifications.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <aside class="detail-aside">
+        <h2>Запись на эту услугу</h2>
+        <p>Форма откроется с уже выбранной услугой. Вы сможете изменить выбор на первом шаге.</p>
+        <button class="button button-primary" type="button" data-booking-open data-service-id={service.id}>
+          <CalendarPlus size={18} aria-hidden="true" />
+          Записаться
+        </button>
+        <p class="demo-note">Demo-режим: данные не отправляются на сервер.</p>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

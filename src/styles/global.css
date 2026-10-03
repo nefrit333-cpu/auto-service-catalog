@@ -48,6 +48,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   min-width: 320px;
   scroll-behavior: smooth;
@@ -490,6 +494,15 @@ textarea:focus-visible {
   transition:
     color 160ms ease,
     transform 160ms ease;
+}
+
+.mobile-menu-button .menu-close-icon,
+.mobile-menu-button[aria-expanded="true"] .menu-open-icon {
+  display: none;
+}
+
+.mobile-menu-button[aria-expanded="true"] .menu-close-icon {
+  display: block;
 }
 
 .mobile-menu-button:hover::before,

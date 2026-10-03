@@ -1,0 +1,26 @@
+---
+import { withBase } from '../utils/paths'
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <p class="footer-title">Автосервис portfolio demo</p>
+      <p>
+        Учебный Astro-проект с каталогом услуг, фильтрами, страницами деталей и
+        demo-формой записи. Заявки не отправляются на сервер.
+      </p>
+    </div>
+    <div>
+      <p class="footer-title">Разделы</p>
+      <a href={withBase('services/')}>Каталог услуг</a>
+      <a href={withBase('contacts/')}>Контакты</a>
+    </div>
+    <div>
+      <p class="footer-title">Demo-запись</p>
+      <button class="button button-secondary" type="button" data-booking-open>
+        Открыть форму
+      </button>
+    </div>
+  </div>
+</footer>

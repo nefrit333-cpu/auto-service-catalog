@@ -1,0 +1,35 @@
+---
+import { ArrowRight, ClipboardList } from '@lucide/astro'
+import heroImage from '../assets/service-hero.webp'
+import { withBase } from '../utils/paths'
+---
+
+<section class="hero-section">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <h1>Городской автосервис в Москве с понятным каталогом услуг</h1>
+      <p>
+        Учебный demo-сайт: услуги с ценами “от”, фильтры по категориям и запись без
+        лишних звонков. Заявки остаются внутри интерфейса.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href={withBase('services/')}>
+          Посмотреть услуги
+          <ArrowRight size={18} aria-hidden="true" />
+        </a>
+        <button class="button button-secondary" type="button" data-booking-open>
+          <ClipboardList size={18} aria-hidden="true" />
+          Записаться
+        </button>
+      </div>
+    </div>
+    <div class="hero-media">
+      <img
+        src={heroImage.src}
+        width={heroImage.width}
+        height={heroImage.height}
+        alt="Светлый demo-цех автосервиса с автомобилем на подъёмнике"
+      />
+    </div>
+  </div>
+</section>
